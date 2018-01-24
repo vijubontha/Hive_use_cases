@@ -1,0 +1,27 @@
+>create table jsontable(line String);
+>load data inpath 'Desktop/json.test(path)' into jsontable;
+>select * from jsontable;
+// Output {"ecode":"101","ename":"raju","sal":40000,"dno":11}
+{"ecode":"102","ename":"ramu","sal":50000,"dno":11}
+{"ecode":"103","ename":"radha","sal":50000,"dno":12}
+{"ecode":"104","ename":"raja","sal":56000,"dno":11}
+{"ecode":"105","ename":"raj","sal":57000,"dno":12} //
+
+> select get_json_object(line,'$.ecode') as ecode,get_json_object(line,'$.ename') as ename,get_json_object(line,'$.sal') as sal,get_json_object(line,'$.dno') as dno from jsontable;
+> create table jsonfinal as select get_json_object(line,'$.ecode') as ecode,get_json_object(line,'$.ename') as ename,get_json_object(line,'$.sal') as sal,get_json_object(line,'$.dno') as dno from jsontable;
+>desc jsonfinal;
+ecode    string  
+ename     string 
+sal       string  
+dno       string
+>create table jsonout(ecode int,ename string,sal float,dno int);
+>insert into table jsonout  select get_json_object(line,'$.ecode') as ecode,get_json_object(line,'$.ename') as ename,get_json_object(line,'$.sal') as sal,get_json_object(line,'$.dno') as dno from jsontable;
+>desc jsonout;
+>create table complexjson(line string);
+>load data local inpath 'Desktop/complex.json' into complexjson;
+>select * from complexjson;
+{"ecode":100,"b":{"x":10,"y":20},"c":200}
+{"ecode":200,"b":{"x":20,"y":30},"c":200}
+> create table js3 as select get_json_object(line,'$ecode') as ecode,get_json_object(line,'$.b') as b,get_json_object(line,'$.c') as c from complexjson;
+>select * from js3;
+>create table data as select ecode, get_json_object(b,'$.x') as x, get_json_object(b,'$.y') from js3;
